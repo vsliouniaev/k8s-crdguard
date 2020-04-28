@@ -170,11 +170,11 @@ func serve(w http.ResponseWriter, r *http.Request, admit admitFunc) {
 
 func main() {
 
-	flag.StringVar(&kubeconfigPath, "kubeconfig", "", "Path to kubeconfig file: e.g. ~/.kube/kind-config-kind")
-	logDebug := *flag.Bool("log-debug", false, "Whether to enable debug log configuration")
-	certFile := *flag.String("cert-file", "/cert/cert", "Path to certificate file to serve TLS")
-	keyFile := *flag.String("key-file", "/cert/key", "Path to key file to serve TLS")
-	flag.Var(&explicitCrds, "crds", "List of crds to block deletion of. Default will block all CRDs. e.g. 'prometheuses.monitoring.coreos.com'")
+	flag.StringVar(&kubeconfigPath, "kubeconfig", "", "Path to kubeconfig file: e.g. ~/.kube/kind-config-kind. (default uses in-cluster config)")
+	logDebug := *flag.Bool("log-debug", false, "Whether to enable debug log configuration. (default false)")
+	certFile := *flag.String("cert-file", "/cert/cert", "Path to certificate file to serve TLS.")
+	keyFile := *flag.String("key-file", "/cert/key", "Path to key file to serve TLS.")
+	flag.Var(&explicitCrds, "crds", "List of crds to block deletion of. Default will block all CRDs. (example \"prometheuses.monitoring.coreos.com\")")
 	flag.Parse()
 
 	configLogging(logDebug)

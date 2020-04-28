@@ -6,5 +6,6 @@ RUN go build -mod vendor -o main
 RUN mv main /main
 
 FROM scratch
+EXPOSE 8443
 COPY --from=build /main /guard
 ENTRYPOINT ["/guard"]

@@ -3,3 +3,27 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/vsliouniaev/k8s-crdguard?color=blue)](https://hub.docker.com/r/vsliouniaev/k8s-crdguard/tags)
 
 # k8s-crdguard
+
+```sh
+$ kubectl delete crd crontabs.stable.example.com
+The request is invalid: : There are still some crontabs.stable.example.com in the cluster
+```
+
+
+Block deletion of CRDs if there are still some of the resources in the cluster.
+Uses [jet/kube-webhook-certgen](https://github.com/jet/kube-webhook-certgen) in the provided chart 
+to simplify provisioning certificates for `validatingwebhookconfigurations`.
+
+```sh
+Usage of k8s-crdguard:
+  -cert-file string
+    	Path to certificate file to serve TLS. (default "/cert/cert")
+  -crds value
+    	List of crds to block deletion of. Default will block all CRDs. (example "prometheuses.monitoring.coreos.com")
+  -key-file string
+    	Path to key file to serve TLS. (default "/cert/key")
+  -kubeconfig string
+    	Path to kubeconfig file: e.g. ~/.kube/kind-config-kind. (default uses in-cluster config)
+  -log-debug
+    	Whether to enable debug log configuration. (default false)
+```

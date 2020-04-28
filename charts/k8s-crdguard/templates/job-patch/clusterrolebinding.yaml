@@ -1,4 +1,5 @@
-{{ $component := "job-patch" }}
+{{- $component := "job-patch" }}
+{{- if $.Values.patchCertificates.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -17,3 +18,4 @@ subjects:
   - kind: ServiceAccount
     name: {{ template "k8s-crdguard.fullname" $ }}-{{ $component }}
     namespace: {{ $.Release.Namespace }}
+{{- end }}

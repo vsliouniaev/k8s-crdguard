@@ -1,4 +1,5 @@
-{{ $component := "job-patch" }}
+{{- $component := "job-patch" }}
+{{- if $.Values.patchCertificates.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -18,3 +19,4 @@ rules:
     verbs:
       - get
       - update
+{{- end }}

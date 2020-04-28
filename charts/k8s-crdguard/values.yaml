@@ -1,4 +1,5 @@
 patchCertificates:
+  enabled: true
   resources:
     limits:
       cpu: 100m
@@ -9,7 +10,7 @@ patchCertificates:
     pullPolicy: IfNotPresent
 
 image:
-  repository: #vsliouniaev/k8s-crdguard
+  repository: vsliouniaev/k8s-crdguard
   tag: v0.0.1
   pullPolicy: IfNotPresent
 resources:
