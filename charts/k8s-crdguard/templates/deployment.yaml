@@ -18,6 +18,12 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: k8s-crdguard
+          {{- if $.Values.crds }}
+          args:
+          {{- range $.Values.crds }}
+            - --crds={{ . }}
+          {{- end }}
+          {{- end }}
           image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           ports:

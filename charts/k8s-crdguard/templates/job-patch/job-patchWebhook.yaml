@@ -17,13 +17,13 @@ spec:
         app: {{ template "k8s-crdguard.name" $ }}
 {{- include "k8s-crdguard.labels" $ | indent 8 }}
     spec:
-      {{- if $.Values.admissionWebhooks.priorityClassName }}
-      priorityClassName: {{ $.Values.admissionWebhooks.priorityClassName }}
+      {{- if $.Values.patchCertificates.priorityClassName }}
+      priorityClassName: {{ $.Values.patchCertificates.priorityClassName }}
       {{- end }}
       containers:
         - name: patch
-          image: {{ $.Values.admissionWebhooks.image.repository }}:{{ $.Values.admissionWebhooks.image.tag }}
-          imagePullPolicy: {{ $.Values.admissionWebhooks.pullPolicy }}
+          image: {{ $.Values.patchCertificates.image.repository }}:{{ $.Values.patchCertificates.image.tag }}
+          imagePullPolicy: {{ $.Values.patchCertificates.pullPolicy }}
           args:
             - patch
             - --webhook-name={{ template "k8s-crdguard.fullname" $ }}
@@ -33,7 +33,7 @@ spec:
             - --secret-name={{ template "k8s-crdguard.fullname" $ }}
             - --patch-failure-policy=Fail
           resources:
-{{ toYaml $.Values.admissionWebhooks.resources | indent 12 }}
+{{ toYaml $.Values.patchCertificates.resources | indent 12 }}
       restartPolicy: OnFailure
       serviceAccountName: {{ template "k8s-crdguard.fullname" $ }}-{{ $component }}
       securityContext:

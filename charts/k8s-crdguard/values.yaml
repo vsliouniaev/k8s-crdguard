@@ -1,8 +1,4 @@
-# Azure
-# antiAffinityTopologyKey: failure-domain.beta.kubernetes.io/zone
-antiAffinityTopologyKey: kubernetes.io/hostname
-admissionWebhooks:
-  enabled: true
+patchCertificates:
   resources:
     limits:
       cpu: 100m
@@ -13,10 +9,14 @@ admissionWebhooks:
     pullPolicy: IfNotPresent
 
 image:
-  repository: vsliouniaev/k8s-crdguard
-  tag: v0.0.0
+  repository: #vsliouniaev/k8s-crdguard
+  tag: v0.0.1
   pullPolicy: IfNotPresent
 resources:
   limits:
     cpu: 100m
     memory: 110Mi
+
+## Explicit list of CRDs to prevent deletion of default is to block everything.
+## Name must be the full name like 'prometheuses.monitoring.coreos.com'
+crds: []
