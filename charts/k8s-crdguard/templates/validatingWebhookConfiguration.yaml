@@ -16,7 +16,6 @@ webhooks:
           - customresourcedefinitions
         operations:
           - DELETE
-          - UPDATE
     clientConfig:
       service:
         namespace: {{ $.Release.Namespace }}

@@ -3,7 +3,10 @@
 antiAffinityTopologyKey: kubernetes.io/hostname
 admissionWebhooks:
   enabled: true
-  resources: {}
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
   image:
     repository: jettech/kube-webhook-certgen
     tag: v1.2.0
@@ -15,5 +18,5 @@ image:
   pullPolicy: IfNotPresent
 resources:
   limits:
-    cpu: 200m
+    cpu: 100m
     memory: 110Mi

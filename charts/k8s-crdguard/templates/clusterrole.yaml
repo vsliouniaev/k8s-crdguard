@@ -6,8 +6,8 @@ metadata:
 {{- include "k8s-crdguard.labels" $ | indent 4 }}
 rules:
   - apiGroups:
-      - "*"
+      - '*'
     resources:
-      - "*"
+      - '*'
     verbs:
-      - LIST
+      - list
