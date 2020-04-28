@@ -1,0 +1,41 @@
+{{ $component := "job-patch" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  name: {{ template "k8s-crdguard.fullname" $ }}-{{ $component }}-patch
+  labels:
+{{- include "k8s-crdguard.component" $component | indent 4 }}
+{{- include "k8s-crdguard.labels" $ | indent 4 }}
+spec:
+  template:
+    metadata:
+      name: {{ template "k8s-crdguard.fullname" $ }}
+      labels:
+        app: {{ template "k8s-crdguard.name" $ }}
+{{- include "k8s-crdguard.labels" $ | indent 8 }}
+    spec:
+      {{- if $.Values.admissionWebhooks.priorityClassName }}
+      priorityClassName: {{ $.Values.admissionWebhooks.priorityClassName }}
+      {{- end }}
+      containers:
+        - name: patch
+          image: {{ $.Values.admissionWebhooks.image.repository }}:{{ $.Values.admissionWebhooks.image.tag }}
+          imagePullPolicy: {{ $.Values.admissionWebhooks.pullPolicy }}
+          args:
+            - patch
+            - --webhook-name={{ template "k8s-crdguard.fullname" $ }}
+            - --namespace={{ $.Release.Namespace }}
+            - --patch-mutating=false
+            - --patch-validating=true
+            - --secret-name={{ template "k8s-crdguard.fullname" $ }}
+            - --patch-failure-policy=Fail
+          resources:
+{{ toYaml $.Values.admissionWebhooks.resources | indent 12 }}
+      restartPolicy: OnFailure
+      serviceAccountName: {{ template "k8s-crdguard.fullname" $ }}-{{ $component }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000

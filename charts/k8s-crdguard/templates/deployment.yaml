@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  {{ template "k8s-crdguard.fullname" $ }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+{{- include "k8s-crdguard.labels" $ | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+{{- include "k8s-crdguard.selectorlabels" $ | indent 6 }}
+  template:
+    metadata:
+      labels:
+{{- include "k8s-crdguard.selectorlabels" $ | indent 8 }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: k8s-crdguard
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8443
+              name: web
+              protocol: TCP
+          volumeMounts:
+            - name: webhook-secret
+              mountPath: /cert
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /healthz
+              port: web
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /healthz
+              port: web
+          resources:
+          resources:
+{{ toYaml $.Values.resources | indent 12 }}
+      volumes:
+        - name: webhook-secret
+          secret:
+            defaultMode: 420
+            secretName: {{ template "k8s-crdguard.fullname" $ }}
+      serviceAccountName: {{ template "k8s-crdguard.fullname" $ }}
+      securityContext:
+        fsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 2000

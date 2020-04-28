@@ -1,0 +1,20 @@
+{{ $component := "job-patch" }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  name: {{ template "k8s-crdguard.fullname" $ }}-{{ $component }}
+  labels:
+{{- include "k8s-crdguard.component" $component | indent 4 }}
+{{- include "k8s-crdguard.labels" $ | indent 4 }}
+rules:
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - validatingwebhookconfigurations
+      - mutatingwebhookconfigurations
+    verbs:
+      - get
+      - update

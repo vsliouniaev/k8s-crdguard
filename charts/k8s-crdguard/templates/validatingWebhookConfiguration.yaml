@@ -1,0 +1,24 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ template "k8s-crdguard.fullname" $ }}
+  labels:
+{{- include "k8s-crdguard.labels" $ | indent 4 }}
+webhooks:
+  - name: k8s-crdguard.vsliouniaev.github.com
+    failurePolicy: Ignore
+    rules:
+      - apiGroups:
+          - apiextensions.k8s.io
+        apiVersions:
+          - "*"
+        resources:
+          - customresourcedefinitions
+        operations:
+          - DELETE
+          - UPDATE
+    clientConfig:
+      service:
+        namespace: {{ $.Release.Namespace }}
+        name: {{ template "k8s-crdguard.fullname" $ }}
+        path: /validate

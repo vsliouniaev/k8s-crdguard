@@ -1,0 +1,19 @@
+{{ $component := "job-patch" }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  name: {{ template "k8s-crdguard.fullname" $ }}-{{ $component }}
+  labels:
+{{- include "k8s-crdguard.component" $component | indent 4 }}
+{{- include "k8s-crdguard.labels" $ | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "k8s-crdguard.fullname" $ }}-{{ $component }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "k8s-crdguard.fullname" $ }}-{{ $component }}
+    namespace: {{ $.Release.Namespace }}

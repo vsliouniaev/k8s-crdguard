@@ -1,0 +1,19 @@
+# Azure
+# antiAffinityTopologyKey: failure-domain.beta.kubernetes.io/zone
+antiAffinityTopologyKey: kubernetes.io/hostname
+admissionWebhooks:
+  enabled: true
+  resources: {}
+  image:
+    repository: jettech/kube-webhook-certgen
+    tag: v1.2.0
+    pullPolicy: IfNotPresent
+
+image:
+  repository: vsliouniaev/k8s-crdguard
+  tag: v0.0.0
+  pullPolicy: IfNotPresent
+resources:
+  limits:
+    cpu: 200m
+    memory: 110Mi
