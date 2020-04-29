@@ -4,11 +4,7 @@
 
 # k8s-crdguard
 
-Example:
-```sh
-$ kubectl delete crd crontabs.stable.example.com
-The request is invalid: : There are still some crontabs.stable.example.com in the cluster
-```
+![](static/images/example-usage.png)
 
 Uses [jet/kube-webhook-certgen](https://github.com/jet/kube-webhook-certgen) in the provided chart 
 to simplify provisioning certificates for `validatingwebhookconfigurations`.
