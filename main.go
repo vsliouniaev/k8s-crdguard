@@ -28,20 +28,13 @@ var (
 )
 
 func toAdmissionResponseFailure(message string) *v1beta1.AdmissionResponse {
-	r := &v1beta1.AdmissionResponse{
+	return &v1beta1.AdmissionResponse{
 		Result: &metav1.Status{
-			Details: &metav1.StatusDetails{
-				Causes: []metav1.StatusCause{}}}}
-
-	r.Result.Status = metav1.StatusFailure
-	r.Result.Reason = metav1.StatusReasonInvalid
-	r.Result.Code = http.StatusConflict
-	r.Result.Message = message
-	r.Result.Details = &metav1.StatusDetails{
-		Causes: []metav1.StatusCause{{Message: message}},
+			Message: message,
+			Reason:  metav1.StatusReasonConflict,
+		},
+		Allowed: false,
 	}
-
-	return r
 }
 
 type admitFunc func(ar v1beta1.AdmissionReview) *v1beta1.AdmissionResponse
@@ -110,7 +103,9 @@ func validateInstancesNotExists(ar v1beta1.AdmissionReview) *v1beta1.AdmissionRe
 
 		if len(list.Items) != 0 {
 			log.V(1).Info("at least on resource exists", "name", ar.Request.Name)
-			return toAdmissionResponseFailure(fmt.Sprintf("There are still some %s in the cluster", ar.Request.Name))
+			return toAdmissionResponseFailure(
+				fmt.Sprintf(
+					"There is at least one '%s' in the cluster. Please delete all resources before deleting the CRD.", ar.Request.Name))
 		} else {
 			log.V(1).Info("found none, allowing delete", "name", ar.Request.Name)
 		}
